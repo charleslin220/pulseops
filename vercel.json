@@ -4,6 +4,7 @@
   "installCommand": "npm --prefix frontend ci",
   "outputDirectory": "frontend/dist",
   "framework": null,
+  "regions": ["lhr1"],
   "rewrites": [
     {"source": "/api/:path*", "destination": "/api"},
     {"source": "/((?!api/|assets/).*)", "destination": "/index.html"}

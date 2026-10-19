@@ -52,3 +52,35 @@ test("responsive dashboard and accessible structure", async ({ page }) => {
     .analyze();
   expect(results.violations).toEqual([]);
 });
+
+test("loading and API failure remain accessible and recoverable", async ({
+  page,
+}) => {
+  let release: () => void = () => {};
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/api/demo/dashboard*", async (route) => {
+    await gate;
+    await route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "Demo temporarily unavailable" }),
+    });
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("status", { name: "Loading operational data" }),
+  ).toBeVisible();
+  const loading = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa"])
+    .analyze();
+  release();
+  expect(loading.violations).toEqual([]);
+  await expect(page.getByRole("alert")).toContainText(
+    "Demo temporarily unavailable",
+  );
+  await page.unroute("**/api/demo/dashboard*");
+  await page.getByRole("button", { name: "Retry" }).click();
+  await expect(page.locator(".event-total")).toBeVisible();
+});

@@ -29,7 +29,7 @@ export function Status({ value }: { value: string }) {
 }
 export function Pending() {
   return (
-    <Stack spacing={2} aria-label="Loading operational data">
+    <Stack spacing={2} role="status" aria-label="Loading operational data">
       <Skeleton height={110} />
       <Skeleton variant="rounded" height={280} />
       <Skeleton height={160} />

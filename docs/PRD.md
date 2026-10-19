@@ -19,4 +19,3 @@ Acceptance criteria:
 - CI covers backend and frontend checks, including real PostgreSQL isolation.
 
 Non-goals: incidents, assignment, event generation loops, realtime, analytics, deployment, invitations, organisation switching, password recovery, and role editing. Seed fixtures alone provide synthetic Phase 1 events.
-

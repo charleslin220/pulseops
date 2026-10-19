@@ -78,4 +78,3 @@ Run the database integration test and Compose/browser smoke flow in an environme
 - Repository: `compose.yaml`, `.env.example`, `.gitignore`, `.github/workflows/ci.yml`, `README.md`, `AGENTS.md`, `ARCHITECTURE.md`, `ROADMAP.md`, `DECISIONS.md`, `docs/PRD.md`, `docs/API.md`, this validation report.
 
 Public references used: [bcrypt package API](https://pkg.go.dev/golang.org/x/crypto/bcrypt), [Vite requirements](https://vite.dev/guide/). Security fixes were selected from the npm audit report and verified by a clean subsequent dependency audit.
-
