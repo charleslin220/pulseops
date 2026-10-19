@@ -1,0 +1,95 @@
+name: PulseOps checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pulseops_test
+          POSTGRES_DB: pulseops_test
+          POSTGRES_PASSWORD: ${{ github.run_id }}-${{ github.run_attempt }}-ephemeral
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U pulseops_test -d pulseops_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://pulseops_test:${{ github.run_id }}-${{ github.run_attempt }}-ephemeral@localhost:5432/pulseops_test?sslmode=disable
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+      - run: test -z "$(gofmt -l .)"
+      - run: go vet ./...
+      - run: go test -race -v ./...
+      - run: go build ./cmd/pulseops
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+  browser:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pulseops_browser
+          POSTGRES_DB: pulseops_browser
+          POSTGRES_PASSWORD: ${{ github.run_id }}-${{ github.run_attempt }}-ephemeral
+        ports: [5432:5432]
+        options: --health-cmd "pg_isready -U pulseops_browser" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://pulseops_browser:${{ github.run_id }}-${{ github.run_attempt }}-ephemeral@localhost:5432/pulseops_browser?sslmode=disable
+      APP_ORIGIN: http://localhost:5174
+      COOKIE_SECURE: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: |
+          go run ./cmd/pulseops migrate
+          go run ./cmd/pulseops seed-demo
+          go run ./cmd/pulseops > /tmp/pulseops-api.log 2>&1 &
+        working-directory: backend
+      - run: npm run dev -- --host 127.0.0.1 --port 5174 > /tmp/pulseops-web.log 2>&1 &
+        working-directory: frontend
+      - run: |
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:5174/api/demo/dashboard > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - run: npx playwright test
+        working-directory: frontend

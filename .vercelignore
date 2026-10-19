@@ -1,0 +1,12 @@
+.git
+.agents
+skills-lock.json
+.env
+.env.*
+node_modules
+frontend/node_modules
+frontend/dist
+**/*.exe
+**/*.log
+**/test-results
+**/playwright-report
