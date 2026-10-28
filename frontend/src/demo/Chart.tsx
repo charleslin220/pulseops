@@ -6,6 +6,7 @@ import {
   TooltipComponent,
   AriaComponent,
   BrushComponent,
+  ToolboxComponent,
   MarkAreaComponent,
 } from "echarts/components";
 import { SVGRenderer } from "echarts/renderers";
@@ -16,6 +17,7 @@ register([
   TooltipComponent,
   AriaComponent,
   BrushComponent,
+  ToolboxComponent,
   MarkAreaComponent,
   SVGRenderer,
 ]);
@@ -67,6 +69,7 @@ export default function Chart({
     const chart = init(ref.current, undefined, { renderer: "svg" });
     const option: EChartsCoreOption = {
       animation: false,
+      toolbox: { show: false },
       aria: {
         enabled: true,
         description: `Operational ${metric} time series. Synthetic data. Use the metric selector and time-range controls to explore. The adjacent summary provides numeric values.`,

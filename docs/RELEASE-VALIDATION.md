@@ -34,7 +34,7 @@ The loading state accessibility issue detected during cloud testing was correcte
 - `go vet ./...` and root `go test ./api`: passed.
 - Frontend lint, format check, six component tests and production build: passed.
 - Eight Playwright flows against the real local API/database: passed (13.8 seconds), including chart mouse selection, URL reload/back, regional correlation, baseline coverage and mobile axe audit.
-- Desktop/mobile service views visually reviewed. Chart bundle advisory remains (546 kB minified / 186 kB gzip).
+- Desktop/mobile service views visually reviewed. Chart bundle advisory remains (578 kB minified / 197 kB gzip).
 - New aurora-v2 fixture seeded additively in the dedicated cloud database before publication; aurora-v1 retained for rollback.
 
 See INVESTIGATION.md for scope and semantics. Production and GitHub Actions results can be inspected on the linked deployment and repository checks.

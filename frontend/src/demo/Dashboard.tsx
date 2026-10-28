@@ -67,7 +67,7 @@ export default function Dashboard() {
           <Select
             displayEmpty
             size="small"
-            value={service}
+            value={query.data ? service : ""}
             onChange={(e) => scope("service", e.target.value)}
             inputProps={{ "aria-label": "Service" }}
           >

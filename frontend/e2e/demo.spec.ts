@@ -168,6 +168,10 @@ test("service API validates paths and keeps the public boundary read-only", asyn
 test("mobile investigation is accessible and chart brushing updates the URL", async ({
   page,
 }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
   await page.goto("/demo/services/checkout");
   await expect(
     page.getByRole("heading", { name: "Checkout API", exact: true }),
@@ -195,4 +199,5 @@ test("mobile investigation is accessible and chart brushing updates the URL", as
     .withTags(["wcag2a", "wcag2aa"])
     .analyze();
   expect(audit.violations).toEqual([]);
+  expect(consoleErrors).toEqual([]);
 });

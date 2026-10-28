@@ -84,7 +84,7 @@ export default function Explorer() {
               key={key}
               size="small"
               displayEmpty
-              value={params.get(key) || ""}
+              value={query.data ? params.get(key) || "" : ""}
               onChange={(e) => update(key, e.target.value)}
               inputProps={{ "aria-label": label }}
             >
