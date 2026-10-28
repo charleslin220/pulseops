@@ -16,3 +16,7 @@ The earlier approval is confirmed by the supplied conversation, but its complete
 8. Independent synthetic fixtures and CI: repeatable demonstrations without employer data. No simulator until separately authorised.
 
 Additional constraints: Secure cookies default on; HTTP loopback requires explicit opt-out. Bcrypt cost 12 is used with a 72-byte maximum. Event reads are bounded to 100 newest records. Deployment is out of scope.
+
+## v0.3 investigation choices
+
+The next-phase request on 2026-10-28 prioritises a complete investigation journey: services, range selection, comparison and related evidence. Existing libraries and bounded data remain sufficient. Comparisons require complete historical coverage and five-minute aligned intervals; no missing baseline is represented as zero. Larger SQL-backed datasets and infrastructure hardening remain separate future milestones. No original stack or session decision changed.

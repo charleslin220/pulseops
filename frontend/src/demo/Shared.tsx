@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import type { DemoEvent } from "./types";
 import { time } from "./types";
+import { Link } from "react-router-dom";
 export function Status({ value }: { value: string }) {
   return (
     <Chip
@@ -89,6 +90,19 @@ export function Details({
             Correlate this event with service latency and error rates. Temporal
             proximity alone does not establish causation.
           </Alert>
+          <Button
+            component={Link}
+            to={`/demo/services/${event.serviceId}?${new URLSearchParams({ from: new Date(Math.max(Date.parse("2026-10-18T12:00:00Z"), Date.parse(event.time) - 3600000)).toISOString(), to: event.time })}`}
+            onClick={onClose}
+          >
+            Investigate this service →
+          </Button>
+          <Button
+            component={Link}
+            to={`/demo/events?${new URLSearchParams({ correlation: event.correlation, sort: "oldest" })}`}
+          >
+            View correlated events →
+          </Button>
         </Stack>
       )}
     </Drawer>

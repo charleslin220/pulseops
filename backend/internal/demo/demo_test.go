@@ -75,7 +75,7 @@ func TestDemoPostgres(t *testing.T) {
 	if err = Seed(ctx, db); err != nil {
 		t.Fatal(err)
 	}
-	for _, path := range []string{"/api/demo/dashboard", "/api/demo/events?service=checkout&severity=critical"} {
+	for _, path := range []string{"/api/demo/dashboard", "/api/demo/events?service=checkout&severity=critical", "/api/demo/services/identity", "/api/demo/events?correlation=scenario-us-east-outage"} {
 		w := httptest.NewRecorder()
 		Handler(db).ServeHTTP(w, httptest.NewRequest("GET", path, nil))
 		if w.Code != 200 {

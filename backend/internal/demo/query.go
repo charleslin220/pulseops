@@ -18,10 +18,13 @@ func serve(w http.ResponseWriter, r *http.Request, d Dataset, f Filters) {
 	events := []Event{}
 	distribution := map[string]int{"info": 0, "warning": 0, "critical": 0}
 	for _, e := range d.Events {
-		if !allowed[e.ServiceID] || e.Time.Before(f.From) || e.Time.After(f.To) {
+		if !allowed[e.ServiceID] || !e.Time.After(f.From) || e.Time.After(f.To) {
 			continue
 		}
 		if f.Severity != "" && e.Severity != f.Severity {
+			continue
+		}
+		if f.Correlation != "" && e.Correlation != f.Correlation {
 			continue
 		}
 		if f.Search != "" && !strings.Contains(strings.ToLower(e.Message+" "+e.Service+" "+e.Correlation+" "+e.Type), f.Search) {
@@ -56,7 +59,7 @@ func serve(w http.ResponseWriter, r *http.Request, d Dataset, f Filters) {
 	latencySum := 0.0
 	latest := map[string]Point{}
 	for _, p := range d.Points {
-		if !allowed[p.ServiceID] || p.Time.Before(f.From) || p.Time.After(f.To) {
+		if !allowed[p.ServiceID] || !p.Time.After(f.From) || p.Time.After(f.To) {
 			continue
 		}
 		points = append(points, p)

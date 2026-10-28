@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const Version = "aurora-v1"
+const Version = "aurora-v2"
 
 var End = time.Date(2026, 10, 19, 12, 0, 0, 0, time.UTC)
 
@@ -66,6 +66,17 @@ func Generate() Dataset {
 			latency := float64(35+i*19) + 12*math.Sin(float64(bucket)/11)
 			errors := requests / 500
 			severity, kind, message := "info", "health_check", "Scheduled service check passed"
+			correlation := fmt.Sprintf("trace-%s-%03d", s.ID, bucket/4)
+			if s.Region == "us-east" && bucket >= 120 && bucket <= 132 {
+				correlation = "scenario-us-east-outage"
+				if bucket < 132 {
+					latency += 320
+					errors = requests / 6
+					severity, kind, message = "critical", "regional_connectivity", "US East connectivity disruption increased upstream failures"
+				} else {
+					kind, message = "recovery", "US East connectivity restored; error rate returned to baseline"
+				}
+			}
 			if s.ID == "checkout" && ((bucket >= 190 && bucket <= 210) || bucket >= 278) {
 				latency += 260
 				errors = requests / 18
@@ -89,7 +100,7 @@ func Generate() Dataset {
 				message = "Checkout latency returned to the expected range"
 			}
 			d.Points = append(d.Points, Point{at, s.ID, requests, errors, math.Round(latency*10) / 10})
-			d.Events = append(d.Events, Event{fmt.Sprintf("evt-%s-%03d", s.ID, bucket), s.ID, s.Name, s.Region, severity, kind, message, at, fmt.Sprintf("trace-%s-%03d", s.ID, bucket/4)})
+			d.Events = append(d.Events, Event{fmt.Sprintf("evt-%s-%03d", s.ID, bucket), s.ID, s.Name, s.Region, severity, kind, message, at, correlation})
 		}
 	}
 	return d
@@ -116,17 +127,24 @@ func Seed(ctx context.Context, db *pgxpool.Pool) error {
 }
 
 type Filters struct {
-	Search, Service, Region, Severity, Sort string
-	From, To                                time.Time
-	Page                                    int
+	Search, Service, Region, Severity, Sort, Correlation string
+	From, To                                             time.Time
+	Page                                                 int
 }
 
 func Parse(r *http.Request) (Filters, error) {
 	q := r.URL.Query()
 	f := Filters{Search: strings.ToLower(strings.TrimSpace(q.Get("q"))), Service: q.Get("service"), Region: q.Get("region"), Severity: q.Get("severity"), Sort: q.Get("sort"), From: End.Add(-24 * time.Hour), To: End, Page: 1}
+	f.Correlation = q.Get("correlation")
+	if len(f.Correlation) > 120 {
+		return f, fmt.Errorf("correlation is too long")
+	}
 	for key := range q {
+		if len(q[key]) != 1 {
+			return f, fmt.Errorf("duplicate filter")
+		}
 		switch key {
-		case "q", "service", "region", "severity", "sort", "from", "to", "page":
+		case "q", "service", "region", "severity", "sort", "from", "to", "page", "correlation":
 		default:
 			return f, fmt.Errorf("unsupported filter")
 		}
@@ -175,7 +193,8 @@ func Handler(db *pgxpool.Pool) http.Handler {
 			write(w, 405, map[string]string{"error": "The public demo is read only"})
 			return
 		}
-		if r.URL.Path != "/api/demo/dashboard" && r.URL.Path != "/api/demo/events" {
+		servicePath := strings.HasPrefix(r.URL.Path, "/api/demo/services/")
+		if r.URL.Path != "/api/demo/dashboard" && r.URL.Path != "/api/demo/events" && !servicePath {
 			write(w, 404, map[string]string{"error": "Not found"})
 			return
 		}
@@ -194,6 +213,10 @@ func Handler(db *pgxpool.Pool) http.Handler {
 		var d Dataset
 		if json.Unmarshal(payload, &d) != nil {
 			write(w, 503, map[string]string{"error": "Demo data is temporarily unavailable"})
+			return
+		}
+		if servicePath {
+			serveService(w, r, d, f)
 			return
 		}
 		serve(w, r, d, f)

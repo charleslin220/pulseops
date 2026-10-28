@@ -222,7 +222,7 @@ export default function Dashboard() {
                   <Link
                     className="service-row"
                     key={s.id}
-                    to={drilldown({ service: s.id })}
+                    to={`/demo/services/${s.id}?${new URLSearchParams({ from: api.get("from")!, to: REFERENCE })}`}
                   >
                     <span className="service-icon">
                       {s.name.slice(0, 2).toUpperCase()}

@@ -20,6 +20,10 @@ Events returns a non-null array, limited to 100 in descending occurredAt/id orde
 
 No session is required. GET `/api/demo/dashboard` returns the snapshot summary, services, time-series points, severity distribution and recent events. GET `/api/demo/events` returns `events`, `total`, `page`, `pageSize` (50), `services` and `referenceTime`.
 
-Supported filters: `q` (up to 120 characters), `service`, `region`, `severity` (info/warning/critical), `from`/`to` (RFC3339 UTC; maximum seven-day interval), `sort` (newest/oldest), and `page` (1–10000). Unknown filter names and invalid values return 400. Mutating methods return 405. Public handlers load only the fixed `aurora-v1` synthetic dataset; they do not read sessions or private organisation events.
+Supported filters: `q` (up to 120 characters), `service`, `region`, `severity` (info/warning/critical), `from`/`to` (RFC3339 UTC; maximum seven-day interval), `sort` (newest/oldest), and `page` (1–10000). Unknown filter names and invalid values return 400. Mutating methods return 405. Public handlers load only the fixed `aurora-v2` synthetic dataset; they do not read sessions or private organisation events.
 
 Dates refer to the fixed 19 October 2026 demonstration snapshot, not live monitoring. The first release filters a bounded JSONB dataset in Go. Large-scale SQL filtering is on the roadmap.
+
+## Investigation endpoints (v0.3)
+
+GET /api/demo/services/:id accepts only from/to (RFC3339 UTC) and returns service, points (full 24-hour context), current, previous (nullable), timeline, timelineTotal, version and referenceTime. Unknown service returns 404; invalid/out-of-snapshot or non-five-minute-aligned windows return 400. The previous window has the same duration and ends at the current start. The public event endpoint also accepts correlation for exact matching, which can span services. All time filtering now uses (from, to]. Duplicate query keys return 400. The fixed published fixture version is aurora-v2.

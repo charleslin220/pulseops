@@ -828,3 +828,165 @@ footer a {
     gap: 8px;
   }
 }
+
+/* Investigation depth: service directory, comparison windows and evidence. */
+.service-directory {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 22px 0;
+}
+.service-card {
+  display: block;
+  padding: 24px;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s,
+    border-color 0.15s;
+}
+.service-card:hover {
+  border-color: #5266e8;
+  box-shadow: 0 8px 24px #20365a12;
+}
+.service-card h2 {
+  font-size: 19px;
+  margin: 22px 0 8px;
+}
+.service-card p {
+  color: #536079;
+  min-height: 44px;
+  line-height: 1.6;
+}
+.service-card-top,
+.service-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.service-card-footer {
+  border-top: 1px solid #e5eaf1;
+  padding-top: 18px;
+  margin-top: 24px;
+  font-size: 12px;
+  color: #4658bd;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+.investigation-controls {
+  padding: 20px;
+}
+.range-presets,
+.range-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+.range-presets {
+  margin-bottom: 18px;
+}
+.range-presets strong {
+  margin-right: auto;
+}
+.range-form .MuiAlert-root {
+  flex-basis: 100%;
+}
+.investigation-chart {
+  padding: 24px;
+  margin: 24px 0;
+}
+.investigation-chart .panel-heading {
+  padding: 0 0 12px;
+}
+.comparison-caption {
+  font-size: 12px;
+  color: #536079;
+}
+.timeline-panel {
+  margin-top: 24px;
+}
+.change-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 28px 28px;
+}
+.change-timeline li {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px 0;
+  border-top: 1px solid #e5eaf1;
+}
+.change-timeline time {
+  font-size: 12px;
+  color: #536079;
+  padding-top: 5px;
+}
+.change-timeline h3 {
+  font-size: 15px;
+  margin: 12px 0 6px;
+}
+.change-timeline p {
+  font-size: 12px;
+  color: #536079;
+}
+.change-timeline a {
+  font-size: 13px;
+}
+.correlation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  background: #f1f4ff;
+  border-bottom: 1px solid #dce3f0;
+}
+.correlation-banner p {
+  font-size: 12px;
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+.scenario-link {
+  flex-shrink: 0;
+  font-weight: 600;
+}
+@media (max-width: 1100px) {
+  .service-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .service-directory {
+    grid-template-columns: 1fr;
+  }
+  .change-timeline li {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .investigation-chart {
+    padding: 16px;
+  }
+  .range-form .MuiTextField-root {
+    width: 100%;
+  }
+  .scope-bar {
+    flex-wrap: wrap;
+  }
+  .correlation-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+.window-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #536079;
+  font-size: 12px;
+}

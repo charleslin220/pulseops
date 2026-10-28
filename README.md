@@ -6,6 +6,12 @@
 
 ![PulseOps operational dashboard](docs/images/dashboard.png)
 
+## New in v0.3 — Investigation depth
+
+Open **Services → Explore regional recovery** to compare the outage with its baseline, select a time window on the chart and follow related events across services. See [release notes](docs/INVESTIGATION.md).
+
+![Service investigation and comparison](docs/images/investigation.png)
+
 ## Try it in 30 seconds
 
 1. Open the Dashboard and inspect the six services.

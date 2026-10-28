@@ -5,6 +5,8 @@ import { Pending } from "./demo/Shared";
 import "./styles.css";
 const Dashboard = lazy(() => import("./demo/Dashboard"));
 const Explorer = lazy(() => import("./demo/Explorer"));
+const Services = lazy(() => import("./demo/Services"));
+const ServicePage = lazy(() => import("./demo/ServicePage"));
 const Workspace = lazy(() => import("./Workspace"));
 const repo = "https://github.com/charleslin220/pulseops";
 function Navigation({ close }: { close: () => void }) {
@@ -27,6 +29,9 @@ function Navigation({ close }: { close: () => void }) {
         </NavLink>
         <NavLink to="/demo/events" onClick={close}>
           <span>≡</span>Event Explorer
+        </NavLink>
+        <NavLink to="/demo/services" onClick={close}>
+          <span>▤</span>Services
         </NavLink>
         <NavLink to="/engineering" onClick={close}>
           <span>◇</span>Engineering notes
@@ -90,7 +95,7 @@ function Engineering() {
           [
             "06",
             "Designed to keep improving",
-            "Next: richer scenarios, chart brushing, service detail pages and accessible virtualised tables. Incident workflows and live updates remain future milestones.",
+            "Service investigations connect comparison windows, chart range selection and correlated change timelines. Next: SQL filtering and larger datasets. Incident workflows and live updates remain future milestones.",
           ],
         ].map(([n, title, body]) => (
           <article className="panel engineering-card" key={n}>
@@ -168,6 +173,11 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/demo/events" element={<Explorer />} />
+              <Route path="/demo/services" element={<Services />} />
+              <Route
+                path="/demo/services/:serviceId"
+                element={<ServicePage />}
+              />
               <Route path="/engineering" element={<Engineering />} />
               <Route
                 path="*"

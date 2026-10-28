@@ -22,3 +22,6 @@ For a first verified release, deploy a production build without assigning its pu
 - Function instances use a pool capped at three database connections. Global traffic controls and broader abuse protection should be added before increasing exposure substantially.
 - Login has a concurrency limit, not a comprehensive brute-force rate limiter. No real customer data is hosted.
 - Do not reuse demo account passwords or local `.env` credentials for cloud services.
+
+
+For v0.3, run seed-demo with the updated code before deploying. It inserts aurora-v2 alongside aurora-v1 and preserves rollback compatibility. No schema change or private credentials are needed. See docs/INVESTIGATION.md.

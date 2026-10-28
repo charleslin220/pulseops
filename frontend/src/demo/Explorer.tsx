@@ -1,6 +1,6 @@
 import { Button, MenuItem, Pagination, Select, TextField } from "@mui/material";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { demoRequest, number, time, type EventsData } from "./types";
 import { Details, Failure, Pending, Status } from "./Shared";
 export default function Explorer() {
@@ -57,6 +57,19 @@ export default function Explorer() {
         <span className="read-only-pill">Read-only environment</span>
       </div>
       <section className="panel">
+        {params.get("correlation") && (
+          <div className="correlation-banner">
+            <div>
+              <strong>Related events across services</strong>
+              <p>
+                Exact correlation: <code>{params.get("correlation")}</code>
+              </p>
+            </div>
+            <Button onClick={() => update("correlation", "")}>
+              Clear correlation
+            </Button>
+          </div>
+        )}
         <div className="filter-bar">
           <TextField
             label="Search events"
@@ -177,7 +190,11 @@ export default function Explorer() {
                             {e.type.replaceAll("_", " ")} · {e.id}
                           </small>
                         </td>
-                        <td>{e.service}</td>
+                        <td>
+                          <Link to={`/demo/services/${e.serviceId}`}>
+                            {e.service}
+                          </Link>
+                        </td>
                         <td>
                           <span className="region-chip">{e.region}</span>
                         </td>

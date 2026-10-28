@@ -21,3 +21,7 @@ Tables: organisations → users → sessions; organisations → events. The user
 Migrations are embedded, transactional, and tracked in schema_migrations. A PostgreSQL advisory transaction lock serialises migration runs. Runtime startup does not mutate the schema; Compose runs a separate migration job. Migration rollback is intentionally not automated in this phase.
 
 The health endpoint is process liveness only. Database startup is checked with Ping; API database failures return 503. Request headers/bodies and passwords are not logged. Eight-hour sessions have no sliding refresh. Expired rows are ignored but require future cleanup.
+
+## Investigation depth (v0.3)
+
+The public module now serves service-level investigation windows, previous-window summaries and bounded significant-change timelines. Exact correlation filters connect public events across services. aurora-v2 is an immutable additive fixture version; the existing table and private tenant schema are unchanged. Time intervals use (from, to] to prevent overlapping comparisons. See docs/INVESTIGATION.md for semantics and deployment order.

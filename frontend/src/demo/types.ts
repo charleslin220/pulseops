@@ -46,6 +46,26 @@ export interface EventsData {
   services: Service[];
   referenceTime: string;
 }
+export interface WindowSummary {
+  from: string;
+  to: string;
+  requests: number;
+  errors: number;
+  errorRate: number;
+  meanLatency: number;
+  samples: number;
+  complete: boolean;
+}
+export interface ServiceData {
+  version: string;
+  referenceTime: string;
+  service: Service;
+  points: Point[];
+  current: WindowSummary;
+  previous: WindowSummary | null;
+  timeline: DemoEvent[];
+  timelineTotal: number;
+}
 export const REFERENCE = "2026-10-19T12:00:00Z";
 export const number = new Intl.NumberFormat("en-GB");
 export function time(value: string) {
